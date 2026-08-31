@@ -1,0 +1,15 @@
+# Build output (out-of-tree cmake+ninja build dir)
+build/
+
+# Stale prebuilt firmware (rebuild instead of trusting this)
+uf2/*.uf2
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+!.vscode/*

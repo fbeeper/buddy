@@ -1,3 +1,5 @@
+<img width="400" alt="BuddyInAction" src="https://github.com/user-attachments/assets/1cc9c4a6-45d4-4792-b8b2-129bb4b7facc" />
+
 # RP2350 round buddy display
 
 > [!WARNING]
@@ -10,8 +12,10 @@
 > Review the source and understand the build, flash, and daemon procedures
 > before using or redistributing it.
 
-Firmware and host-side integration notes for a Waveshare
-RP2350-LCD-1.28-B used as a six-row coding-session status display.
+
+
+Firmware for a Waveshare RP2350-LCD-1.28-B used as a six-row AI coding-session 
+status display. Includes host-side daemon.
 
 The board is intentionally a dumb renderer. A single host daemon owns its
 USB serial port, assigns logical sessions to rows, and restores them after a

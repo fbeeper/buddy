@@ -226,7 +226,7 @@ human.
 | Tool work begins or continues | `set working` |
 | Permission prompt is shown | `set approval` |
 | Other user input is required | `set waiting` |
-| Context compaction (when both begin/end events exist) | `set compacting`, then `set working` |
+| Context compaction (when both begin/end events exist) | `set compacting`, then the harness-appropriate post-turn state |
 | Turn stops normally | `set idle` |
 | Unrecoverable harness/turn failure | `set error` |
 | Session is really closed/deleted/expired | `end` |
@@ -566,8 +566,12 @@ Important Codex-specific details:
   changes, the adapter conservatively shows `approval` rather than hiding a
   real request for user input.
 - Codex emits `PreCompact` before context compaction and `PostCompact` after it.
-  The adapter maps those events to `compacting` and then back to `working` so
-  the display shows the operation without remaining stuck afterward.
+  The adapter maps those events to `compacting` and then `idle`, and disarms
+  transcript recovery after `PostCompact`, because compaction completion is
+  the last lifecycle event Codex emits for that turn. The desktop harness can
+  delay `PostCompact` until its next UI activity, so the Codex transcript
+  watcher also treats a top-level `compacted` record as the authoritative
+  completion marker and restores `idle` immediately.
 - Codex currently has no ESC/cancel hook. While a turn is active, the adapter
   arms the relay's transcript watcher. The relay recognizes Codex's structured
   `event_msg` / `turn_aborted` record and restores `idle`. The JSONL transcript

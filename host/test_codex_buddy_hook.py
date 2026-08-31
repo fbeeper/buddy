@@ -57,7 +57,7 @@ class CodexBuddyHookTests(unittest.TestCase):
             "PreToolUse": "working",
             "PostToolUse": "working",
             "PreCompact": "compacting",
-            "PostCompact": "working",
+            "PostCompact": "idle",
             "Stop": "idle",
         }
         for native_event, state in expected.items():
@@ -227,6 +227,26 @@ class CodexBuddyHookTests(unittest.TestCase):
 
         codex_buddy_hook.dispatch({"hook_event_name": "Stop"}, event)
 
+        self.assertTrue(sent[0].startswith("UNWATCH codex-"))
+        self.assertEqual(sent[1], "emit")
+
+    def test_post_compact_disarms_recovery_before_idle(self):
+        event = codex_buddy_hook.harness_event({
+            "hook_event_name": "PostCompact",
+            "session_id": "thr-1",
+            "cwd": "/tmp/project",
+        }, "/missing", self.make_cache_dir())
+        sent = []
+        original_emit = codex_buddy_hook.buddy_harness.emit
+        original_send = codex_buddy_hook.buddy_transport.send_line
+        self.addCleanup(setattr, codex_buddy_hook.buddy_harness, "emit", original_emit)
+        self.addCleanup(setattr, codex_buddy_hook.buddy_transport, "send_line", original_send)
+        codex_buddy_hook.buddy_harness.emit = lambda value: sent.append("emit")
+        codex_buddy_hook.buddy_transport.send_line = sent.append
+
+        codex_buddy_hook.dispatch({"hook_event_name": "PostCompact"}, event)
+
+        self.assertEqual(event.state, "idle")
         self.assertTrue(sent[0].startswith("UNWATCH codex-"))
         self.assertEqual(sent[1], "emit")
 

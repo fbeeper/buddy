@@ -31,7 +31,7 @@ EVENT_STATES = {
     "PreToolUse": "working",
     "PostToolUse": "working",
     "PreCompact": "compacting",
-    "PostCompact": "working",
+    "PostCompact": "idle",
     "Stop": "idle",
 }
 

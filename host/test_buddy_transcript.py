@@ -57,6 +57,22 @@ class BuddyTranscriptTests(unittest.TestCase):
         self.assertIsNone(
             buddy_transcript.resolution_for_line("claude", codex_abort))
 
+    def test_codex_compacted_record_resolves_to_idle(self):
+        compacted = encoded({
+            "type": "compacted",
+            "payload": {"replacement_history": []},
+        })
+        self.assertEqual(
+            buddy_transcript.resolution_for_line("codex", compacted), "idle")
+        self.assertIsNone(
+            buddy_transcript.resolution_for_line("claude", compacted))
+
+    def test_quoted_codex_compacted_record_does_not_resolve(self):
+        self.assertIsNone(buddy_transcript.resolution_for_line("codex", encoded({
+            "type": "response_item",
+            "payload": {"text": '{"type":"compacted"}'},
+        })))
+
     def test_malformed_or_unknown_records_are_ignored(self):
         self.assertIsNone(buddy_transcript.resolution_for_line("claude", b"nope"))
         self.assertIsNone(buddy_transcript.resolution_for_line("unknown", b"{}"))

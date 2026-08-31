@@ -59,6 +59,12 @@ def _claude_resolution(entry: dict[str, Any]) -> str | None:
 
 
 def _codex_resolution(entry: dict[str, Any]) -> str | None:
+    # Codex writes this top-level record once replacement history has been
+    # committed. In the desktop harness, PostCompact can be delayed until the
+    # next UI activity, which otherwise leaves the display stuck on "comp".
+    if entry.get("type") == "compacted":
+        return "idle"
+
     if entry.get("type") != "event_msg":
         return None
     payload = entry.get("payload")

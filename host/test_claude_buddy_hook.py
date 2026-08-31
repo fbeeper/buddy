@@ -24,7 +24,7 @@ class ClaudeBuddyHookTests(unittest.TestCase):
             "PreToolUse": "working",
             "PostToolUse": "working",
             "PreCompact": "compacting",
-            "PostCompact": "working",
+            "PostCompact": "idle",
             "Stop": "idle",
         }
         for native_event, state in expected.items():

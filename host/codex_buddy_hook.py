@@ -29,7 +29,7 @@ EVENT_STATES = {
     "PreToolUse": "working",
     "PostToolUse": "working",
     "PreCompact": "compacting",
-    "PostCompact": "working",
+    "PostCompact": "idle",
     "Stop": "idle",
 }
 
@@ -39,7 +39,6 @@ WATCH_EVENTS = {
     "PostToolUse",
     "PermissionRequest",
     "PreCompact",
-    "PostCompact",
 }
 
 
@@ -250,7 +249,7 @@ def dispatch(payload: Mapping[str, Any], event: buddy_harness.HarnessEvent) -> N
 
     # Clear first so an already-written abort marker cannot resurrect an ended
     # row after END or race a normal Stop update.
-    if event_name in ("Stop", "SessionEnd"):
+    if event_name in ("PostCompact", "Stop", "SessionEnd"):
         buddy_transport.send_line(buddy_harness.unwatch_line(event))
 
     buddy_harness.emit(event)
